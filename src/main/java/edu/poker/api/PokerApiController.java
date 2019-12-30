@@ -28,16 +28,18 @@ public class PokerApiController implements PokerApi {
 
     /**
      * Compare cards rest method
+     *
      * @param players players
      * @return response entity with result
      */
     @Override
     public ResponseEntity<Result> compareCards(@Valid Players players) {
         try {
-            CardSet cardSet1 = createCardSet(players.getPlayer1().getCardsList());
-            CardSet cardSet2 = createCardSet(players.getPlayer2().getCardsList());
-            return ResponseEntity.status(HttpStatus.CREATED).body(getComparisonResult(players.getPlayer1().getName(),
-                    cardSet1, players.getPlayer2().getName(), cardSet2));
+            validatePlayers(players);
+            CardSet cardSet0 = createCardSet(players.get(0).getCardsList());
+            CardSet cardSet1 = createCardSet(players.get(1).getCardsList());
+            return ResponseEntity.status(HttpStatus.CREATED).body(getComparisonResult(players.get(0).getName(),
+                    cardSet1, players.get(1).getName(), cardSet1));
         } catch (ValidationException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new Result(String.format(RESULT_VALIDATION_MESSAGE, e.getMessage())));
         } catch (Exception e) {
@@ -47,6 +49,7 @@ public class PokerApiController implements PokerApi {
 
     /**
      * Crete model card from list of api layer cards
+     *
      * @param cards api layer cards
      * @return model layer car set
      */
@@ -61,9 +64,10 @@ public class PokerApiController implements PokerApi {
 
     /**
      * Get hands, compare them and return comparison message
-     * @param player1Name player name
+     *
+     * @param player1Name  player name
      * @param player1Cards player's cards
-     * @param player2Name player name
+     * @param player2Name  player name
      * @param player2Cards player's cards
      * @return comparison result with message
      * @throws ValidationException if card suites or ranks are not valid
@@ -81,5 +85,22 @@ public class PokerApiController implements PokerApi {
             result.setMessage(String.format(RESULT_TIE_MESSAGE, player1Hand.getName()));
         }
         return result;
+    }
+
+    private void validatePlayers(Players players) throws ValidationException {
+        validatePlayersNotEmpty(players);
+        validateExactlyTwoPlayers(players);
+    }
+
+    private void validatePlayersNotEmpty(Players players) throws ValidationException {
+        if (players == null) {
+            throw new ValidationException("Players are null.");
+        }
+    }
+
+    private void validateExactlyTwoPlayers(Players players) throws ValidationException {
+        if (players.size() != 2) {
+            throw new ValidationException("There should be exactly two players in the request body");
+        }
     }
 }

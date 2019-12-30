@@ -8,8 +8,9 @@ You can view working application by pointing browser at http://localhost:8080/
 
 Try posting Cards to see who wins
 
-{
-  "player1": {
+[
+  {
+    "name": "Vardenis",
     "cards": [
       {
         "rank": "Jack",
@@ -31,10 +32,10 @@ Try posting Cards to see who wins
         "rank": "Jack",
         "suite": "Clubs"
       }
-    ],
-    "name": "Vardenis"
+    ]
   },
-  "player2": {
+  {
+    "name": "Pavardenis",
     "cards": [
       {
         "rank": "Ace",
@@ -56,8 +57,7 @@ Try posting Cards to see who wins
         "rank": "3",
         "suite": "Clubs"
       }
-    ],
-    "name": "Pavardenis"
+    ]
   }
-}
+]
 
